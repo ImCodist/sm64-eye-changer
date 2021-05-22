@@ -1,11 +1,14 @@
-import wx
-import wx.adv
+# -- LIBRARIES
 import os
-import shutil
 import configparser
 import zipfile
+import shutil
 from glob import glob
 
+import wx
+import wx.adv
+
+# --- GLOBAL VARIABLES
 APP_VERSION = "0.01"
 
 PROJECT_64_DIR = ""
@@ -13,9 +16,10 @@ TEXTUREPATH1 = "SUPER MARIO 64#6B8D43C4#0#2_all"
 TEXTUREPATH2 = "SUPER MARIO 64#9FBECEF9#0#2_all"
 TEXTUREPATH3 = "SUPER MARIO 64#5D6B0678#0#2_all"
 
-# CONFIG
+# --- CONFIG
 config = configparser.ConfigParser()
 
+# save the current settings
 def saveConfig():
     config.read('config.ini')
 
@@ -25,6 +29,7 @@ def saveConfig():
     with open('config.ini', 'w') as configfile:
         config.write(configfile)
 
+# load from config.ini
 def loadConfig():
     global PROJECT_64_DIR, TEXTUREPATH1, TEXTUREPATH2, TEXTUREPATH3
 
@@ -51,7 +56,7 @@ def loadConfig():
 
 loadConfig()
 
-# OTHER FUNCTIONS
+# --- OTHER FUNCTIONS
 def getEyes():
     list = glob("Eyes/*/")
     newlist = []
@@ -63,6 +68,8 @@ def getEyes():
 
     return newlist
 
+# run when user first starts the app
+# detection system may need to be changed later
 def FirstTimeSetup(self):
     global PROJECT_64_DIR
     dialog = wx.MessageDialog(self, "It seems this is your first time using SM64EC.\nPlease select the folder Project64 is stored in. (This can be changed later in settings)", "Welcome!", style=wx.OK | wx.ICON_INFORMATION)
@@ -75,8 +82,9 @@ def FirstTimeSetup(self):
 
     saveConfig()
 
+# -------------------------------- WINDOW CODE --------------------------------
 
-# FRAME
+# --- FRAME
 class MyFrame(wx.Frame):
     def __init__(self, parent, title):
         super(MyFrame, self).__init__(parent, title=title, size=(610,520), style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
@@ -179,7 +187,7 @@ class MyFrame(wx.Frame):
             windowStyle = self.defaultWindowStyle
             self.SetWindowStyle(windowStyle)
 
-# main panel
+# --- MAIN PANEL
 class PanelOne(wx.Panel):
     def __init__(self, parent):
         super(PanelOne, self).__init__(parent)
@@ -199,6 +207,7 @@ class PanelOne(wx.Panel):
         self.buttonDelete = wx.BitmapButton(self, bitmap=deleteBitmap, pos=(80, 365))
         self.buttonDelete.Bind(wx.EVT_BUTTON, self.deleteEye)
         
+        # unused as of now
         #editBitmap = wx.Image("Assets/editEye.png", type=wx.BITMAP_TYPE_ANY).Scale(40, 40).ConvertToBitmap()
         #self.buttonEdit = wx.BitmapButton(self, bitmap=editBitmap, pos=(135, 365), name="Edit")
         #self.buttonEdit.Bind(wx.EVT_BUTTON, self.createNewEye)
@@ -287,7 +296,7 @@ class PanelOne(wx.Panel):
         self.eyes = getEyes()
         self.listBox.SetItems(self.eyes)
         
-
+# --- NEW EYE DIALOG
 class NewEyeDialog(wx.Frame):
     def __init__(self, parent, edit):
         super(NewEyeDialog, self).__init__(parent, title="Create New Eye", size=(530,340), style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
@@ -360,6 +369,7 @@ class NewEyeDialog(wx.Frame):
     def cancel(self, e):
         self.Close()
 
+# --- OPTIONS DIALOG
 class Options(wx.Frame):
     def __init__(self, parent):
         super(Options, self).__init__(parent, title="Settings", size=(350,200), style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
@@ -409,6 +419,7 @@ class Options(wx.Frame):
 
         if (e.GetEventObject().GetName() == "Save"): self.Close()
 
+# --- APP
 class MyApp(wx.App):
     def OnInit(self):
         self.frame = MyFrame(None, "64 EYE CHANGER")
