@@ -1,0 +1,75 @@
+class LANG():
+    TITLE = "SM64 EYE CHANGER"
+
+    FIRST_TIME_WARNING = "It seems this is your first time using SM64EC.\nPlease select the folder Project64 is stored in. (This can be changed later in settings)\n\nA dialog will open once you press 'OK'"
+    FIRST_TIME_WELCOME = "Welcome!"
+    FIRST_TIME_PJ64DIR = "Project 64 Directory"
+
+    MENU_NEW = "New"
+    MENU_NEW_TIP = "Create a new eye texture."
+    MENU_EXPORT = "Export..."
+    MENU_EXPORT_TIP = "Export your current textures to a .zip file for sharing."
+    MENU_IMPORT = "Import..."
+    MENU_IMPORT_TIP = "Import a selection of texture files."
+    MENU_REFRESH = "Refresh List"
+    MENU_REFRESH_TIP = "Refresh your current list of textures."
+    MENU_EXIT = "Exit"
+    MENU_EXIT_TIP = "Exit the program."
+    
+    MENU_ALWAYS_ON_TOP = "Always On Top"
+    MENU_ALWAYS_ON_TOP_TIP = "Toggle the program to show above all windows."
+    MENU_SETTINGS = "Settings..."
+    MENU_SETTINGS_TIP = "Configure the program to your liking."
+
+    MENU_ABOUT = "About"
+    MENU_ABOUT_TIP = "Information about this program."
+
+    MENU_BAR_FILE = "File"
+    MENU_BAR_OPTIONS = "Options"
+    MENU_BAR_HELP = "Help"
+
+    ABOUT_TITLE = "SM64 Eye Changer"
+    ABOUT_DESC = "SM64EC is a tool created for Super Mario 64 machinima.\nThe tool allows for the quick swapping of Mario's eye texture in-game,\ngiving Mario more character and expression."
+    ABOUT_LICENCE = "This project uses the"
+
+    EYE_SELECTION = "Eye Selection"
+    EYE_PREVIEW = "Eye Preview"
+    FREEZE_FRAME = "Freeze Frame"
+    APPLY = "APPLY"
+
+    APPLY_SUCCESS1 = "Applied the"
+    APPLY_SUCCESS2 = "eye texture.\nPlease restart the game or load a savestate."
+    APPLIED = "APPLIED"
+
+    CREATE_NEW_EYE = "Create New Eye"
+    CREATE_FINISH = "Finish"
+    CREATE_CANCEL = "Cancel"
+    CREATE_OPENED_LABEL = "Opened"
+    CREATE_SEMI_LABEL = "Semi Opened"
+    CREATE_CLOSED_LABEL = "Closed"
+    CREATE_NAME_LABEL = "Name"
+
+    SETTINGS = "Settings"
+    SETTINGS_SAVE = "Save"
+    SETTINGS_GENERAL = "General"
+    SETTINGS_LABEL_PJ64_PATH = "Project64 Path"
+    SETTINGS_ADVANCED = "Advanced"
+    SETTINGS_FINAL_EYE_TEXTURES = "Final Eye Textures"
+    SETTINGS_OPEN_TEXTURE = "Open Texture"
+    SETTINGS_MID_TEXTURE = "Mid Texture"
+    SETTINGS_CLOSED_TEXTURE = "Closed Texture"
+    SETTINGS_RESET_TO_DEFAULT = "Reset To Default"
+
+    TOOLTIP_CREATE = "Create a new eye texture."
+    TOOLTIP_DELETE = "Delete an existing eye texture."
+    TOOLTIP_APPLY = "Apply the currently selected eye texture to the game."
+    TOOLTIP_PJ64 = "Set the directory in which Project64 is stored.\nIS REQUIRED."
+    TOOLTIP_FINAL_EYE = "When applying textures, this will be the final name of the files when copied.\nCan be used to work with ROMs that arent the base game.\nOnly change if you know what you are doing."
+    
+    ERROR_O = "Could not load from the path:"
+    ERROR_1 = "Please enter a valid Project 64 path."
+    ERROR_2 = "Please select a eye texture to apply."
+
+    COULD_NOT_CREATE = "COULD NOT CREATE"
+    COULD_NOT_CREATE_1 = "A name cannot be blank, silly. :P"
+    COULD_NOT_CREATE_2 = "An eye texture with this name already exists.\nPlease choose a different name."
