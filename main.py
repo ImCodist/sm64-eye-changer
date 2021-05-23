@@ -9,9 +9,9 @@ import wx
 import wx.adv
 
 # -- LANGUAGES
-import lang.fr
+import lang.eng
 
-lang = lang.fr.LANG()
+lang = lang.eng.LANG()
 
 # --- GLOBAL VARIABLES
 APP_VERSION = "1.0.0"
