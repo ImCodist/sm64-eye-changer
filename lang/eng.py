@@ -73,3 +73,4 @@ class LANG():
     COULD_NOT_CREATE = "COULD NOT CREATE"
     COULD_NOT_CREATE_1 = "A name cannot be blank, silly. :P"
     COULD_NOT_CREATE_2 = "An eye texture with this name already exists.\nPlease choose a different name."
+    COULD_NOT_CREATE_3 = "Please select a texture for each type of eye."

@@ -18,6 +18,7 @@ APP_VERSION = "1.0.0"
 
 class optionVars():
     PROJECT_64_DIR = ""
+    LANGUAGE = "English"
     TEXTUREPATH1 = "SUPER MARIO 64#6B8D43C4#0#2_all"
     TEXTUREPATH2 = "SUPER MARIO 64#9FBECEF9#0#2_all"
     TEXTUREPATH3 = "SUPER MARIO 64#5D6B0678#0#2_all"
@@ -31,7 +32,7 @@ config = configparser.ConfigParser()
 def saveConfig():
     config.read('config.ini')
 
-    config["CONFIG"] = {"PROJECT_64_DIR": option.PROJECT_64_DIR}
+    config["CONFIG"] = {"PROJECT_64_DIR": option.PROJECT_64_DIR, "LANGUAGE": option.LANGUAGE}
     config["ADV"] = {"TEXTUREPATH1": option.TEXTUREPATH1, "TEXTUREPATH2": option.TEXTUREPATH2, "TEXTUREPATH3": option.TEXTUREPATH3}
 
     with open('config.ini', 'w') as configfile:
@@ -44,7 +45,8 @@ def loadConfig():
     if ("CONFIG" in config):
         configSec = config["CONFIG"]
 
-        option.PROJECT_64_DIR = configSec.get("PROJECT_64_DIR")
+        option.PROJECT_64_DIR = configSec.get("PROJECT_64_DIR", option.PROJECT_64_DIR)
+        option.LANGUAGE = configSec.get("LANGUAGE", option.LANGUAGE)
 
     if ("ADV" in config):
         configSec = config["ADV"]
@@ -280,11 +282,7 @@ class PanelOne(wx.Panel):
             self.eyePreview.SetBitmap(newBitmap)
     
     def createNewEye(self, e):
-        edit = False
-        if (e.GetEventObject().GetName() == "Edit"):
-            edit = True
-
-        self.dialog = NewEyeDialog(self, edit)
+        self.dialog = NewEyeDialog(self, False)
 
     def deleteEye(self, e):
         selection = self.listBox.GetSelection()
@@ -408,6 +406,11 @@ class NewEyeDialog(wx.Frame):
             dialog.ShowModal()
             return
 
+        if (self.fileOpen.GetPath() == "" or self.fileMid.GetPath() == "" or self.fileClosed.GetPath() == ""):
+            dialog = wx.MessageDialog(self, lang.COULD_NOT_CREATE_3, lang.COULD_NOT_CREATE, style=wx.OK | wx.ICON_ERROR)
+            dialog.ShowModal()
+            return
+
         os.makedirs(newpath)
         shutil.copy(self.fileOpen.GetPath(), newpath + "/1.png")
         shutil.copy(self.fileMid.GetPath(), newpath + "/2.png")
@@ -440,6 +443,10 @@ class Options(wx.Frame):
         self.project64Dir.Bind(wx.EVT_DIRPICKER_CHANGED, self.updateConfigFunc)
         self.project64Dir.SetToolTip(lang.TOOLTIP_PJ64)
 
+        #languages = ["English", "Français"]
+        #self.languageBox = wx.adv.BitmapComboBox(tab1, choices=languages, value=option.LANGUAGE ,pos=(10, 50))
+
+
         tab2 = wx.Panel(notebook)
         notebook.AddPage(tab2,lang.SETTINGS_ADVANCED)
         
@@ -469,12 +476,15 @@ class Options(wx.Frame):
 
     def updateConfigFunc(self, e):
         option.PROJECT_64_DIR = self.project64Dir.GetPath()
+        #option.LANGUAGE = self.languageBox.GetValue()
+
         if (self.textureOpenPath.GetValue() != ""): 
             option.TEXTUREPATH1 = self.textureOpenPath.GetValue()
         if (self.textureMidPath.GetValue() != ""): 
             option.TEXTUREPATH2 = self.textureMidPath.GetValue()
         if (self.textureClosedPath.GetValue() != ""): 
             option.TEXTUREPATH3 = self.textureClosedPath.GetValue()
+
 
         saveConfig()
 
