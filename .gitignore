@@ -2,5 +2,6 @@ Eyes/
 Promo/
 config.ini
 tempCodeRunnerFile.py
+build-info.txt
 
 lang/__pycache__

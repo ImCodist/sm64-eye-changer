@@ -8,8 +8,10 @@ The goal is to *eliminate* the constant dragging & dropping of files, or the use
 
 This tool was created in Python 3.9.5.
 
-## Download
-Not yet avaliable.
+## Download & Setup
+**Click [HERE](https://github.com/ImCodist/sm64-eye-changer/releases/) to download the newest release of the program.**\
+You will also need to use [Glide64](https://drive.google.com/file/d/1FQ5YKiLz_adXhnmOwrhez1A2vJteWl3m/view?usp=sharing), or a graphics plugin that supports texture packs.
+For more information check out the [wiki](https://github.com/ImCodist/sm64-eye-changer/wiki).
 
 ## Dependencies
 - [wxPython](https://www.wxpython.org/)

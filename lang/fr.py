@@ -1,4 +1,6 @@
 class LANG():
+    # INCOMPLETE
+
     TITLE = "SM64 EYE CHANGER"
 
     FIRST_TIME_WARNING = "Il semble que ce soit la première fois que vous utilisez SM64EC. \nVeuillez sélectionner le dossier dans lequel Project64 est stocké. (Cela peut être modifié ultérieurement dans les paramètres) \n \nUne boîte de dialogue s'ouvre lorsque vous appuyez sur 'OK'"

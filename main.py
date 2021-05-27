@@ -3,18 +3,20 @@ import os
 import configparser
 import zipfile
 import shutil
+import requests
+import webbrowser
 from glob import glob
 
 import wx
 import wx.adv
 
 # -- LANGUAGES
-import lang.eng
+import Lang.eng
 
-lang = lang.eng.LANG()
+lang = Lang.eng.LANG()
 
 # --- GLOBAL VARIABLES
-APP_VERSION = "1.0.0"
+APP_VERSION = "v1.0.1"
 
 class optionVars():
     PROJECT_64_DIR = ""
@@ -77,6 +79,23 @@ def getEyes():
 
     return newlist
 
+def DownloadGlide64(self):
+    saveTo = option.PROJECT_64_DIR + "\\Plugin\\GLideN64.dll"
+
+    if (os.access(saveTo, os.R_OK)):
+
+        downloadFrom = "https://www.dropbox.com/s/fqqickpexrv676h/GLideN64.dll?dl=1"
+        request = requests.get(downloadFrom, allow_redirects=True)
+    
+        open(saveTo, 'wb').write(request.content)
+
+        finished = wx.MessageDialog(self, lang.GLIDE64_FINISHED, lang.GLIDE64_INSTALL, style=wx.OK | wx.ICON_INFORMATION)
+        finished.ShowModal()
+
+    else:
+        error = wx.MessageDialog(self, lang.GLIDE64_DENIED + "\n\n(Could not save to " + saveTo + ")", lang.GLIDE64_INSTALL, style=wx.OK | wx.ICON_ERROR)
+        error.ShowModal()
+
 # run when user first starts the app
 # detection system may need to be changed later
 def FirstTimeSetup(self):
@@ -89,8 +108,15 @@ def FirstTimeSetup(self):
 
         if (result == wx.ID_OK):
             option.PROJECT_64_DIR = pj64.GetPath()
-
             saveConfig()
+
+            downloadGlide64 = wx.MessageDialog(self, lang.FIRST_TIME_GLIDE64, lang.FIRST_TIME_WELCOME, style=wx.YES_NO | wx.ICON_INFORMATION)
+            result = downloadGlide64.ShowModal()
+
+            if (result == wx.ID_YES):
+                DownloadGlide64(self)
+                
+
         else:
             self.Close()
 
@@ -139,6 +165,9 @@ class MyFrame(wx.Frame):
         menuSettings = menuOptions.Append(wx.ID_PREFERENCES,lang.MENU_SETTINGS, lang.MENU_SETTINGS_TIP)
 
         menuHelp = wx.Menu()
+        menuWiki = menuHelp.Append(wx.ID_HELP, lang.MENU_WIKI, lang.MENU_WIKI_TIP)
+        menuGlide = menuHelp.Append(wx.ID_FILE, lang.MENU_GLIDE, lang.MENU_GLIDE_TIP)
+        menuHelp.AppendSeparator()
         menuAbout = menuHelp.Append(wx.ID_ABOUT, lang.MENU_ABOUT, lang.MENU_ABOUT_TIP)
 
         menuBar = wx.MenuBar()
@@ -155,8 +184,16 @@ class MyFrame(wx.Frame):
 
         self.Bind(wx.EVT_MENU, self.OnOptions, menuSettings)
         self.Bind(wx.EVT_MENU, self.AlwaysOnTop, self.menuAlwaysTop)
-
+        
+        self.Bind(wx.EVT_MENU, self.OnWiki, menuWiki)
+        self.Bind(wx.EVT_MENU, self.OnGlide, menuGlide)
         self.Bind(wx.EVT_MENU, self.OnAbout, menuAbout)
+    
+    def OnWiki(self, e):
+        webbrowser.open_new_tab("https://github.com/ImCodist/sm64-eye-changer/wiki")
+
+    def OnGlide(self, e):
+        DownloadGlide64(self)
 
     def OnAbout(self, e):
         aboutInfo = wx.adv.AboutDialogInfo()
@@ -262,7 +299,7 @@ class PanelOne(wx.Panel):
 
         applyButton = wx.Button(self, label=lang.APPLY, pos=(485, 385), size=(100,30))
         applyButton.Bind(wx.EVT_BUTTON, self.applyEyes)
-        self.buttonDelete.SetToolTip(lang.TOOLTIP_APPLY)
+        applyButton.SetToolTip(lang.TOOLTIP_APPLY)
 
 
     def selectEye(self, e):
@@ -301,7 +338,14 @@ class PanelOne(wx.Panel):
         self.eyePreview.SetBitmap(newBitmap)
 
     def applyEyes(self, e): 
-        pathTo = option.PROJECT_64_DIR + "/Plugin/hires_texture/SUPER MARIO 64/png_all"
+        gameName = option.TEXTUREPATH1.split('#')[0]
+        print(gameName)
+        pathTo = option.PROJECT_64_DIR + "/Plugin/hires_texture/" + gameName +"/png_all"
+
+        if (os.access(pathTo, os.R_OK) == False):
+            dialog = wx.MessageDialog(self, lang.APPLY_FAILED1  + " '" + pathTo + "' " + lang.APPLY_FAILED2, lang.APPLIED_FAIL, style=wx.OK | wx.ICON_ERROR)
+            dialog.ShowModal()
+            return
 
         if (os.path.isdir(option.PROJECT_64_DIR) is False):
             dialog = wx.MessageDialog(self, lang.ERROR_1, "ERROR CODE 1", style=wx.OK | wx.ICON_ERROR)

@@ -4,6 +4,11 @@ class LANG():
     FIRST_TIME_WARNING = "It seems this is your first time using SM64EC.\nPlease select the folder Project64 is stored in. (This can be changed later in settings)\n\nA dialog will open once you press 'OK'"
     FIRST_TIME_WELCOME = "Welcome!"
     FIRST_TIME_PJ64DIR = "Project 64 Directory"
+    FIRST_TIME_GLIDE64 = "Would you like to install GLideN64?"
+
+    GLIDE64_INSTALL = "GLide64 Installation"
+    GLIDE64_DENIED = "Insufficient permissions, could not install GLideN64.\nPlease run the program as administrator and try to install again.\nTo attempt install GLideN64 again, click on the 'Help', then 'Install GLideN64'."
+    GLIDE64_FINISHED = "Successfully downloaded & added GLideN64 to Project64.\nPlease change your Graphics Plugin in Project64 to GLideN64, and enable Texture Packs."
 
     MENU_NEW = "New"
     MENU_NEW_TIP = "Create a new eye texture."
@@ -21,7 +26,12 @@ class LANG():
     MENU_SETTINGS = "Settings..."
     MENU_SETTINGS_TIP = "Configure the program to your liking."
 
+    MENU_WIKI = "Official Wiki"
+    MENU_GLIDE = "Install GLideN64"
     MENU_ABOUT = "About"
+    
+    MENU_WIKI_TIP = "Open the Official SM64EC Wiki in a new tab."
+    MENU_GLIDE_TIP = "Reinstall / Install the GLideN64 graphics plugin."
     MENU_ABOUT_TIP = "Information about this program."
 
     MENU_BAR_FILE = "File"
@@ -39,6 +49,9 @@ class LANG():
 
     APPLY_SUCCESS1 = "Applied the"
     APPLY_SUCCESS2 = "eye texture.\nPlease restart the game or load a savestate."
+    APPLY_FAILED1 = "Could not save to "
+    APPLY_FAILED2 = "\nRun the program as administrator and try again."
+    APPLIED_FAIL = "COULD NOT APPLY"
     APPLIED = "APPLIED"
 
     CREATE_NEW_EYE = "Create New Eye"
