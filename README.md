@@ -1,4 +1,4 @@
-![Super Mario 64 Eye Changer](https://drive.google.com/uc?export=view&id=11cIwYPuA8aT6hhy32X0JjuQtbjRMMgig)
+![Super Mario 64 Eye Changer](https://user-images.githubusercontent.com/50346006/124558284-6de8a580-de08-11eb-927d-64cf02dd3894.png)
 ![Version](https://img.shields.io/github/v/release/ImCodist/sm64-eye-changer?style=flat-square) ![Downloads](https://img.shields.io/github/downloads/ImCodist/sm64-eye-changer/total?style=flat-square) ![License](https://img.shields.io/github/license/ImCodist/sm64-eye-changer?style=flat-square) ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/ImCodist/sm64-eye-changer?style=flat-square)
 
 ---
