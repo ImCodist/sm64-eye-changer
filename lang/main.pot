@@ -1,0 +1,353 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SM64 EYE CHANGER\n"
+"POT-Creation-Date: 2021-08-25 03:31-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: codis\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=cp1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 3.0\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: main.py:140
+msgid ""
+"Successfully downloaded & added GLideN64 to Project64.\n"
+"Please change your Graphics Plugin in Project64 to GLideN64, and enable Texture Packs."
+msgstr ""
+
+#: main.py:140 main.py:144
+msgid "GLide64 Installation"
+msgstr ""
+
+#: main.py:144
+msgid ""
+"Insufficient permissions, could not install GLideN64.\n"
+"Please run the program as administrator and try to install again.\n"
+"To attempt install GLideN64 again, click on the 'Help', then 'Install GLideN64'."
+msgstr ""
+
+#: main.py:144
+msgid ""
+"\n"
+"\n"
+"(Could not save to "
+msgstr ""
+
+#: main.py:150
+msgid ""
+"It seems this is your first time using SM64EC.\n"
+"Please select the folder Project64 is stored in. (This can be changed later in settings)\n"
+"\n"
+"A dialog will open once you press 'OK'"
+msgstr ""
+
+#: main.py:150 main.py:161
+msgid "Welcome!"
+msgstr ""
+
+#: main.py:154
+msgid "Project 64 Directory"
+msgstr ""
+
+#: main.py:161
+msgid "Would you like to install GLideN64?"
+msgstr ""
+
+#: main.py:203
+msgid "New"
+msgstr ""
+
+#: main.py:203 main.py:332
+msgid "Create a new eye texture."
+msgstr ""
+
+#: main.py:205
+msgid "Export..."
+msgstr ""
+
+#: main.py:205
+msgid "Export your current textures to a .zip file for sharing."
+msgstr ""
+
+#: main.py:206
+msgid "Import..."
+msgstr ""
+
+#: main.py:206
+msgid "Import a selection of texture files."
+msgstr ""
+
+#: main.py:208
+msgid "Refresh List"
+msgstr ""
+
+#: main.py:208
+msgid "Refresh your current list of textures."
+msgstr ""
+
+#: main.py:210
+msgid "Exit"
+msgstr ""
+
+#: main.py:210
+msgid "Exit the program."
+msgstr ""
+
+#: main.py:213
+msgid "Always On Top"
+msgstr ""
+
+#: main.py:213
+msgid "Toggle the program to show above all windows."
+msgstr ""
+
+#: main.py:215
+msgid "Settings..."
+msgstr ""
+
+#: main.py:215
+msgid "Configure the program to your liking."
+msgstr ""
+
+#: main.py:218
+msgid "Official Wiki"
+msgstr ""
+
+#: main.py:218
+msgid "Open the Official SM64EC Wiki in a new tab."
+msgstr ""
+
+#: main.py:219
+msgid "Install GLideN64"
+msgstr ""
+
+#: main.py:219
+msgid "Reinstall / Install the GLideN64 graphics plugin."
+msgstr ""
+
+#: main.py:221
+msgid "About"
+msgstr ""
+
+#: main.py:221
+msgid "Information about this program."
+msgstr ""
+
+#: main.py:224
+msgid "File"
+msgstr ""
+
+#: main.py:225
+msgid "Options"
+msgstr ""
+
+#: main.py:226
+msgid "Help"
+msgstr ""
+
+#: main.py:252
+msgid "SM64 Eye Changer"
+msgstr ""
+
+#: main.py:254
+msgid ""
+"SM64EC is a tool created for Super Mario 64 machinima.\n"
+"The tool allows for the quick swapping of Mario's eye texture in-game,\n"
+"giving Mario more character and expression."
+msgstr ""
+
+#: main.py:258
+msgid "This project uses the"
+msgstr ""
+
+#: main.py:321
+msgid "Eye Selection"
+msgstr ""
+
+#: main.py:338
+msgid "Delete an existing eye texture."
+msgstr ""
+
+#: main.py:347
+msgid "Eye Preview"
+msgstr ""
+
+#: main.py:358
+msgid "Freeze Frame"
+msgstr ""
+
+#: main.py:361
+msgid "APPLY"
+msgstr ""
+
+#: main.py:363
+msgid "Apply the currently selected eye texture to the game."
+msgstr ""
+
+#: main.py:374
+msgid "Could not load from the path:"
+msgstr ""
+
+#: main.py:409
+msgid "Could not save to "
+msgstr ""
+
+#: main.py:409
+msgid ""
+"\n"
+"Run the program as administrator and try again."
+msgstr ""
+
+#: main.py:409
+msgid "COULD NOT APPLY"
+msgstr ""
+
+#: main.py:414
+msgid "Please enter a valid Project 64 path."
+msgstr ""
+
+#: main.py:414
+msgid "ERROR CODE 1"
+msgstr ""
+
+#: main.py:423
+msgid "Please select a eye texture to apply."
+msgstr ""
+
+#: main.py:423
+msgid "ERROR CODE 2"
+msgstr ""
+
+#: main.py:444
+msgid "Applied the"
+msgstr ""
+
+#: main.py:444
+msgid ""
+"eye texture.\n"
+"Please restart the game or load a savestate."
+msgstr ""
+
+#: main.py:444
+msgid "APPLIED"
+msgstr ""
+
+#: main.py:454
+msgid "Create New Eye"
+msgstr ""
+
+#: main.py:459
+msgid "Finish"
+msgstr ""
+
+#: main.py:461
+msgid "Cancel"
+msgstr ""
+
+#: main.py:468
+msgid "Opened"
+msgstr ""
+
+#: main.py:469
+msgid "Semi Opened"
+msgstr ""
+
+#: main.py:470
+msgid "Closed"
+msgstr ""
+
+#: main.py:484
+msgid "Name"
+msgstr ""
+
+#: main.py:506
+msgid "A name cannot be blank, silly. :P"
+msgstr ""
+
+#: main.py:506 main.py:513 main.py:518
+msgid "COULD NOT CREATE"
+msgstr ""
+
+#: main.py:513
+msgid ""
+"An eye texture with this name already exists.\n"
+"Please choose a different name."
+msgstr ""
+
+#: main.py:518
+msgid "Please select a texture for each type of eye."
+msgstr ""
+
+#: main.py:536
+msgid "Settings"
+msgstr ""
+
+#: main.py:540
+msgid "Save"
+msgstr ""
+
+#: main.py:547
+msgid "General"
+msgstr ""
+
+#: main.py:549
+msgid "Project64 Path"
+msgstr ""
+
+#: main.py:552
+msgid ""
+"Set the directory in which Project64 is stored.\n"
+"IS REQUIRED."
+msgstr ""
+
+#: main.py:554
+msgid "Theme"
+msgstr ""
+
+#: main.py:559
+msgid "Language"
+msgstr ""
+
+#: main.py:563
+msgid "Advanced"
+msgstr ""
+
+#: main.py:565
+msgid "Final Eye Textures"
+msgstr ""
+
+#: main.py:567
+msgid ""
+"When applying textures, this will be the final name of the files when copied.\n"
+"Can be used to work with ROMs that arent the base game.\n"
+"Only change if you know what you are doing."
+msgstr ""
+
+#: main.py:569
+msgid "Open Texture"
+msgstr ""
+
+#: main.py:573
+msgid "Mid Texture"
+msgstr ""
+
+#: main.py:577
+msgid "Closed Texture"
+msgstr ""
+
+#: main.py:581
+msgid "Reset To Default"
+msgstr ""
+
+#: main.py:627
+msgid "SM64 EYE CHANGER"
+msgstr ""
