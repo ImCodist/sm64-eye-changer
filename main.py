@@ -218,6 +218,7 @@ class MyFrame(wx.Frame):
 
         menuHelp = wx.Menu()
         menuWiki = menuHelp.Append(wx.ID_HELP, _("Official Wiki"), _("Open the Official SM64EC Wiki in a new tab."))
+        menuReport = menuHelp.Append(wx.ID_HELP_INDEX, _("Report a issue..."), _("If you find a problem with this program report it here."))
         menuGlide = menuHelp.Append(wx.ID_FILE, _("Install GLideN64"), _("Reinstall / Install the GLideN64 graphics plugin."))
         menuHelp.AppendSeparator()
         menuAbout = menuHelp.Append(wx.ID_ABOUT, _("About"), _("Information about this program."))
@@ -227,8 +228,6 @@ class MyFrame(wx.Frame):
         menuBar.Append(menuOptions, _("Options"))
         menuBar.Append(menuHelp, _("Help"))
         self.SetMenuBar(menuBar)
-
-        menuBar.SetBackgroundColour(theme.BACKGROUND2)
 
         self.Bind(wx.EVT_MENU, self.OnNew, menuCreateEye)
         self.Bind(wx.EVT_MENU, self.OnExport, menuExportEye)
@@ -240,11 +239,15 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.AlwaysOnTop, self.menuAlwaysTop)
         
         self.Bind(wx.EVT_MENU, self.OnWiki, menuWiki)
+        self.Bind(wx.EVT_MENU, self.OnReport, menuReport)
         self.Bind(wx.EVT_MENU, self.OnGlide, menuGlide)
         self.Bind(wx.EVT_MENU, self.OnAbout, menuAbout)
     
     def OnWiki(self, e):
         webbrowser.open_new_tab("https://github.com/ImCodist/sm64-eye-changer/wiki")
+
+    def OnReport(self, e):
+        webbrowser.open_new_tab("https://github.com/ImCodist/sm64-eye-changer/issues")
 
     def OnGlide(self, e):
         DownloadGlide64(self)
@@ -460,16 +463,24 @@ class NewEyeDialog(wx.Frame):
 
         finishButton = wx.Button(panel, label=_("Finish"), pos=(430, 270))
         finishButton.Bind(wx.EVT_BUTTON, self.finish)
+        finishButton.SetForegroundColour(theme.FOREGROUND)
+        finishButton.SetBackgroundColour(theme.BUTTON)
+
         cancelButton = wx.Button(panel, label=_("Cancel"), pos=(345, 270))
         cancelButton.Bind(wx.EVT_BUTTON, self.cancel)
-
-        noEye1Bitmap = wx.Image("Assets/Unknown/1.png", type=wx.BITMAP_TYPE_ANY).Scale(150, 150).ConvertToBitmap()
-        noEye2Bitmap = wx.Image("Assets/Unknown/2.png", type=wx.BITMAP_TYPE_ANY).Scale(150, 150).ConvertToBitmap()
-        noEye3Bitmap = wx.Image("Assets/Unknown/3.png", type=wx.BITMAP_TYPE_ANY).Scale(150, 150).ConvertToBitmap()
+        cancelButton.SetForegroundColour(theme.FOREGROUND)
+        cancelButton.SetBackgroundColour(theme.BUTTON)
 
         self.openLabel = wx.StaticText(panel, label=_("Opened"), pos=(20,55))
         self.midLabel = wx.StaticText(panel, label=_("Semi Opened"), pos=(180,55))
         self.closedLabel = wx.StaticText(panel, label=_("Closed"), pos=(340,55))
+        self.openLabel.SetForegroundColour(theme.FOREGROUND)
+        self.midLabel.SetForegroundColour(theme.FOREGROUND)
+        self.closedLabel.SetForegroundColour(theme.FOREGROUND)
+
+        noEye1Bitmap = wx.Image(theme.I_UNKNOWN+"1.png", type=wx.BITMAP_TYPE_ANY).Scale(150, 150).ConvertToBitmap()
+        noEye2Bitmap = wx.Image(theme.I_UNKNOWN+"2.png", type=wx.BITMAP_TYPE_ANY).Scale(150, 150).ConvertToBitmap()
+        noEye3Bitmap = wx.Image(theme.I_UNKNOWN+"3.png", type=wx.BITMAP_TYPE_ANY).Scale(150, 150).ConvertToBitmap()
 
         self.eyeOpenPreview = wx.StaticBitmap(panel, bitmap=noEye1Bitmap, pos=(20,70))
         self.eyeMidPreview = wx.StaticBitmap(panel, bitmap=noEye2Bitmap, pos=(180,70))
@@ -484,7 +495,10 @@ class NewEyeDialog(wx.Frame):
         self.fileClosed.Bind(wx.EVT_FILEPICKER_CHANGED, self.browseEye)
 
         self.eyeNameLabel = wx.StaticText(panel, label=_("Name"), pos=(20,10))
+        self.eyeNameLabel.SetForegroundColour(theme.FOREGROUND)
         self.eyeName = wx.TextCtrl(panel, pos=(60, 10), size=(100,20))
+        self.eyeName.SetForegroundColour(theme.FOREGROUND)
+        self.eyeName.SetBackgroundColour(theme.BACKGROUND2)
 
         self.Show()
 
@@ -539,29 +553,37 @@ class Options(wx.Frame):
 
         self.Centre()
         panel = wx.Panel(self)
+        panel.SetBackgroundColour(theme.BACKGROUND)
 
         apply = wx.Button(panel, label=_("Save"), pos=(250, 160), name="Save")
         apply.Bind(wx.EVT_BUTTON, self.updateConfigFunc)
+        apply.SetForegroundColour(theme.FOREGROUND)
+        apply.SetBackgroundColour(theme.BUTTON)
 
         notebook = wx.Notebook(panel)
-
 
         tab1 = wx.Panel(notebook)
         notebook.AddPage(tab1, _("General"))
 
         project64Label = wx.StaticText(tab1, label=_("Project64 Path"), pos=(10,15))
+        project64Label.SetForegroundColour(theme.FOREGROUND)
+
         self.project64Dir = wx.DirPickerCtrl(tab1, pos=(100, 10), style=wx.DIRP_USE_TEXTCTRL | wx.DIRP_DIR_MUST_EXIST, size=(220,30), path=option.PROJECT_64_DIR)
         self.project64Dir.Bind(wx.EVT_DIRPICKER_CHANGED, self.updateConfigFunc)
         self.project64Dir.SetToolTip(_("Set the directory in which Project64 is stored.\nIS REQUIRED."))
 
         themeLabel = wx.StaticText(tab1, label=_("Theme"), pos=(10,53))
+        themeLabel.SetForegroundColour(theme.FOREGROUND)
         self.themeBox = wx.Choice(tab1, pos=(100, 50), choices=THEMES, size=(100,30))
         self.themeBox.SetSelection(THEMES.index(option.THEME))
         self.themeBox.Bind(wx.EVT_CHOICE, self.updateThemeFunc)
 
         langageLabel = wx.StaticText(tab1, label=_("Language"), pos=(10,83))
+        langageLabel.SetForegroundColour(theme.FOREGROUND)
         self.languageBox = wx.adv.BitmapComboBox(tab1 ,pos=(100, 80), size=(80,30))
         self.languageBox.Bind(wx.EVT_COMBOBOX, self.updateLangFunc)
+        self.languageBox.SetForegroundColour(theme.FOREGROUND)
+        self.languageBox.SetBackgroundColour(theme.BACKGROUND2)
 
         for lang in LANGS:
             path = "lang/"+lang
@@ -583,7 +605,6 @@ class Options(wx.Frame):
         flagBitmap = self.languageBox.GetItemBitmap(LANGS.index(option.LANGUAGE))
         self.flagPreview = wx.StaticBitmap(panel, bitmap=flagBitmap, pos=(190,108))
 
-
         tab2 = wx.Panel(notebook)
         notebook.AddPage(tab2,_("Advanced"))
         
@@ -592,19 +613,30 @@ class Options(wx.Frame):
         toolTipWarning = _("When applying textures, this will be the final name of the files when copied.\nCan be used to work with ROMs that arent the base game.\nOnly change if you know what you are doing.")
 
         textureOpenLabel = wx.StaticText(tab2, label=_("Open Texture"), pos=(20,30))
+        textureOpenLabel.SetForegroundColour(theme.FOREGROUND)
         self.textureOpenPath = wx.TextCtrl(tab2, pos=(125, 27), size=(180,22), value=option.TEXTUREPATH1)
         self.textureOpenPath.SetToolTip(toolTipWarning)
+        self.textureOpenPath.SetForegroundColour(theme.FOREGROUND)
+        self.textureOpenPath.SetBackgroundColour(theme.BACKGROUND2)
 
         textureMidLabel = wx.StaticText(tab2, label=_("Mid Texture"), pos=(20,60))
+        textureMidLabel.SetForegroundColour(theme.FOREGROUND)
         self.textureMidPath = wx.TextCtrl(tab2, pos=(125, 57), size=(180,22), value=option.TEXTUREPATH2)
         self.textureMidPath.SetToolTip(toolTipWarning)
+        self.textureMidPath.SetForegroundColour(theme.FOREGROUND)
+        self.textureMidPath.SetBackgroundColour(theme.BACKGROUND2)
 
         textureClosedLabel = wx.StaticText(tab2, label=_("Closed Texture"), pos=(20,90))
+        textureClosedLabel.SetForegroundColour(theme.FOREGROUND)
         self.textureClosedPath = wx.TextCtrl(tab2, pos=(125, 87), size=(180,22), value=option.TEXTUREPATH3)
         self.textureClosedPath.SetToolTip(toolTipWarning)
+        self.textureClosedPath.SetForegroundColour(theme.FOREGROUND)
+        self.textureClosedPath.SetBackgroundColour(theme.BACKGROUND2)
 
         resetOptions = wx.Button(tab2, pos=(5, 135), label = _("Reset To Default"))
         resetOptions.Bind(wx.EVT_BUTTON, self.resetCustomTexture)
+        resetOptions.SetForegroundColour(theme.FOREGROUND)
+        resetOptions.SetBackgroundColour(theme.BUTTON)
 
 
         sizer = wx.BoxSizer()
@@ -663,7 +695,7 @@ class MyApp(wx.App):
         self.frame = MyFrame(None, _("SM64 EYE CHANGER"))
         self.frame.Show()
 
-        #self.Bind(wx.EVT_IDLE, self.onIdle)
+        # self.Bind(wx.EVT_IDLE, self.onIdle)
 
         return True
 
