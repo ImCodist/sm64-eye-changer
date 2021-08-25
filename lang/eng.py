@@ -66,6 +66,7 @@ class LANG():
     SETTINGS_SAVE = "Save"
     SETTINGS_GENERAL = "General"
     SETTINGS_LABEL_PJ64_PATH = "Project64 Path"
+    SETTINGS_LABEL_THEME_BOX = "Theme"
     SETTINGS_ADVANCED = "Advanced"
     SETTINGS_FINAL_EYE_TEXTURES = "Final Eye Textures"
     SETTINGS_OPEN_TEXTURE = "Open Texture"

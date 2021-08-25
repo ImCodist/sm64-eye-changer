@@ -4,4 +4,7 @@ config.ini
 tempCodeRunnerFile.py
 build-info.txt
 
+__pycache__
 lang/__pycache__
+themes/__pycache__
+.vscode

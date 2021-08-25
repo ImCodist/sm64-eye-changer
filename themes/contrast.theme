@@ -1,0 +1,11 @@
+[THEME]
+FOREGROUND = 255, 255, 255
+BACKGROUND = 0, 0, 0
+BACKGROUND2 = 0, 0, 0
+BUTTON = 0, 0, 0
+
+I_CREATEEYE = themes/assets/Dark/createEye.png
+I_DELETEEYE = themes/assets/Dark/deleteEye.png
+I_EDITEYE = themes/assets/Dark/editEye.png
+
+I_UNKNOWN = themes/assets/Dark/Unknown/

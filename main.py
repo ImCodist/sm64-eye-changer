@@ -10,20 +10,17 @@ from glob import glob
 import wx
 import wx.adv
 
-# -- LANGUAGES
-import Lang.eng
-
-lang = Lang.eng.LANG()
-
 # --- GLOBAL VARIABLES
 APP_VERSION = "v1.0.1"
 
+# --- OPTIONS
 class optionVars():
     PROJECT_64_DIR = ""
     LANGUAGE = "English"
     TEXTUREPATH1 = "SUPER MARIO 64#6B8D43C4#0#2_all"
     TEXTUREPATH2 = "SUPER MARIO 64#9FBECEF9#0#2_all"
     TEXTUREPATH3 = "SUPER MARIO 64#5D6B0678#0#2_all"
+    THEME = "dark"
 
 option = optionVars()
 
@@ -34,7 +31,7 @@ config = configparser.ConfigParser()
 def saveConfig():
     config.read('config.ini')
 
-    config["CONFIG"] = {"PROJECT_64_DIR": option.PROJECT_64_DIR, "LANGUAGE": option.LANGUAGE}
+    config["CONFIG"] = {"PROJECT_64_DIR": option.PROJECT_64_DIR, "LANGUAGE": option.LANGUAGE, "THEME": option.THEME}
     config["ADV"] = {"TEXTUREPATH1": option.TEXTUREPATH1, "TEXTUREPATH2": option.TEXTUREPATH2, "TEXTUREPATH3": option.TEXTUREPATH3}
 
     with open('config.ini', 'w') as configfile:
@@ -49,6 +46,7 @@ def loadConfig():
 
         option.PROJECT_64_DIR = configSec.get("PROJECT_64_DIR", option.PROJECT_64_DIR)
         option.LANGUAGE = configSec.get("LANGUAGE", option.LANGUAGE)
+        option.THEME = configSec.get("THEME", option.THEME)
 
     if ("ADV" in config):
         configSec = config["ADV"]
@@ -66,6 +64,35 @@ def loadConfig():
             paths[i - 1] = finalVal
 
 loadConfig()
+
+# -- THEMES & LANG
+
+# sort through each theme and language file
+# considering not using a stupid module system to make it more accessable to people who dont understand python stuff
+def getModules(dir, ext):
+    array = []
+    for file in os.listdir(dir):
+        if file.endswith(ext):
+            if (file == "__init__.py"):
+                continue
+            else:
+                array.append(file.removesuffix(ext))
+
+    return array
+
+THEMES = getModules("themes/", ".theme")
+THEMES.insert(0, "light")
+LANGS = getModules("lang/", ".py")
+print("loaded " + str(len(THEMES)) + " themes " + str(THEMES))
+print("loaded " + str(len(LANGS)) + " languages " + str(LANGS))
+
+# themes
+from loadtheme import themeClass
+theme = themeClass(option.THEME)
+
+# lang
+import lang
+lang = lang.eng.LANG()
 
 # --- OTHER FUNCTIONS
 def getEyes():
@@ -138,9 +165,11 @@ class MyFrame(wx.Frame):
         if (option.PROJECT_64_DIR == ""):
             FirstTimeSetup(self)
 
+        self.SetBackgroundColour(theme.BACKGROUND)
+
         # status bar
         self.statusbar = self.CreateStatusBar()
-        self.statusbar.SetStatusText("v" + APP_VERSION)
+        self.statusbar.SetStatusText(APP_VERSION)
 
         # create a panel
         self.panel = PanelOne(self)
@@ -175,6 +204,8 @@ class MyFrame(wx.Frame):
         menuBar.Append(menuOptions,lang.MENU_BAR_OPTIONS)
         menuBar.Append(menuHelp,lang.MENU_BAR_HELP)
         self.SetMenuBar(menuBar)
+
+        menuBar.SetBackgroundColour(theme.BACKGROUND2)
 
         self.Bind(wx.EVT_MENU, self.OnNew, menuCreateEye)
         self.Bind(wx.EVT_MENU, self.OnExport, menuExportEye)
@@ -267,19 +298,25 @@ class PanelOne(wx.Panel):
         self.eyes = getEyes()
 
         organizer = wx.StaticBox(self, label=lang.EYE_SELECTION, size=(230, 420), pos=(10, 5))
+        organizer.SetForegroundColour(theme.FOREGROUND)
+        organizer.SetBackgroundColour(theme.BACKGROUND2)
 
         self.listBox = wx.ListBox(self, style=wx.LB_SORT | wx.LB_SINGLE, size=(200, 330), pos=(25, 25), choices=self.eyes)
         self.listBox.Bind(wx.EVT_LISTBOX, self.selectEye)
+        self.listBox.SetForegroundColour(theme.FOREGROUND)
+        self.listBox.SetBackgroundColour(theme.BACKGROUND2)
 
-        createBitmap = wx.Image("Assets/createEye.png", type=wx.BITMAP_TYPE_ANY).Scale(40, 40).ConvertToBitmap()
+        createBitmap = wx.Image(theme.I_CREATEEYE, type=wx.BITMAP_TYPE_ANY).Scale(40, 40).ConvertToBitmap()
         self.buttonCreate = wx.BitmapButton(self, bitmap=createBitmap, pos=(25, 365))
         self.buttonCreate.SetToolTip(lang.TOOLTIP_CREATE)
         self.buttonCreate.Bind(wx.EVT_BUTTON, self.createNewEye)
+        self.buttonCreate.SetBackgroundColour(theme.BUTTON)
 
-        deleteBitmap = wx.Image("Assets/deleteEye.png", type=wx.BITMAP_TYPE_ANY).Scale(40, 40).ConvertToBitmap()
+        deleteBitmap = wx.Image(theme.I_DELETEEYE, type=wx.BITMAP_TYPE_ANY).Scale(40, 40).ConvertToBitmap()
         self.buttonDelete = wx.BitmapButton(self, bitmap=deleteBitmap, pos=(80, 365))
         self.buttonDelete.SetToolTip(lang.TOOLTIP_DELETE)
         self.buttonDelete.Bind(wx.EVT_BUTTON, self.deleteEye)
+        self.buttonDelete.SetBackgroundColour(theme.BUTTON)
         
         # unused as of now
         #editBitmap = wx.Image("Assets/editEye.png", type=wx.BITMAP_TYPE_ANY).Scale(40, 40).ConvertToBitmap()
@@ -287,19 +324,24 @@ class PanelOne(wx.Panel):
         #self.buttonEdit.Bind(wx.EVT_BUTTON, self.createNewEye)
 
         organizer = wx.StaticBox(self, label=lang.EYE_PREVIEW, size=(310, 365), pos=(275, 5))
+        organizer.SetForegroundColour(theme.FOREGROUND)
+        organizer.SetBackgroundColour(theme.BACKGROUND2)
 
-        eyePreviewBitmap = wx.Image("Assets/Unknown/1.png", type=wx.BITMAP_TYPE_ANY).Scale(300, 300).ConvertToBitmap()
+        eyePreviewBitmap = wx.Image(theme.I_UNKNOWN + "1.png", type=wx.BITMAP_TYPE_ANY).Scale(300, 300).ConvertToBitmap()
         self.eyePreview = wx.StaticBitmap(self, bitmap=eyePreviewBitmap, pos=(280,20))
+        self.eyePreview.SetBackgroundColour(theme.BACKGROUND2)
 
         self.slider = wx.Slider(self, value=1, minValue=1, maxValue=3, pos=(280, 325), size=(300, 40))
         self.slider.Bind(wx.EVT_SLIDER, self.previewFrame)
 
-
         self.freezeFrame = wx.CheckBox(self, label=lang.FREEZE_FRAME, pos=(380, 390))
+        self.freezeFrame.SetForegroundColour(theme.FOREGROUND)
 
         applyButton = wx.Button(self, label=lang.APPLY, pos=(485, 385), size=(100,30))
         applyButton.Bind(wx.EVT_BUTTON, self.applyEyes)
         applyButton.SetToolTip(lang.TOOLTIP_APPLY)
+        applyButton.SetForegroundColour(theme.FOREGROUND)
+        applyButton.SetBackgroundColour(theme.BUTTON)
 
 
     def selectEye(self, e):
@@ -330,7 +372,7 @@ class PanelOne(wx.Panel):
     def previewFrame(self, e):
         val = self.slider.GetValue()
         selection = self.listBox.GetSelection()
-        path = "Assets/Unknown/" + str(val) + ".png"
+        path = theme.I_UNKNOWN + str(val) + ".png"
         if (selection != wx.NOT_FOUND):
             path = "Eyes/" + self.listBox.GetString(selection) + "/" + str(val) + ".png"
 
@@ -391,6 +433,7 @@ class NewEyeDialog(wx.Frame):
         super(NewEyeDialog, self).__init__(parent, title=lang.CREATE_NEW_EYE, size=(530,340), style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
         
         panel = wx.Panel(self, size=(530, 300))
+        panel.SetBackgroundColour(theme.BACKGROUND)
 
         finishButton = wx.Button(panel, label=lang.CREATE_FINISH, pos=(430, 270))
         finishButton.Bind(wx.EVT_BUTTON, self.finish)
@@ -487,6 +530,10 @@ class Options(wx.Frame):
         self.project64Dir.Bind(wx.EVT_DIRPICKER_CHANGED, self.updateConfigFunc)
         self.project64Dir.SetToolTip(lang.TOOLTIP_PJ64)
 
+        themeLabel = wx.StaticText(tab1, label=lang.SETTINGS_LABEL_THEME_BOX, pos=(10,50))
+        self.themeBox = wx.ComboBox(tab1, pos=(100, 50), choices=THEMES, value=option.THEME)
+        self.themeBox.Bind(wx.EVT_COMBOBOX, self.updateThemeFunc)
+
         #languages = ["English", "Français"]
         #self.languageBox = wx.adv.BitmapComboBox(tab1, choices=languages, value=option.LANGUAGE ,pos=(10, 50))
 
@@ -534,6 +581,19 @@ class Options(wx.Frame):
 
         if (e.GetEventObject().GetName() == "Save"):
             self.Close()
+
+    def updateThemeFunc(self, e):
+        option.THEME = self.themeBox.GetValue()
+
+        global theme
+        theme = themeClass(option.THEME)
+        saveConfig()
+
+        self.Close()
+        app.frame.Close()
+
+        app.OnInit()
+        app.frame.OnOptions(e)
 
     def resetCustomTexture(self, e):
         self.textureOpenPath.SetValue("SUPER MARIO 64#6B8D43C4#0#2_all")
