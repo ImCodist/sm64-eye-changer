@@ -72,21 +72,21 @@ loadConfig()
 
 # sort through each theme and language file
 # considering not using a stupid module system to make it more accessable to people who dont understand python stuff
-def getModules(dir, ext):
+def getModules(direc, ext):
     array = []
     if (ext != "dir"):
-        for file in os.listdir(dir):
+        for file in os.listdir(direc):
             if file.endswith(ext):
                 if (file == "__init__.py"):
                     continue
                 else:
                     array.append(file.removesuffix(ext))
     else:
-        dirlist = glob(dir+"/*/")
+        dirlist = glob(direc+"/*/")
         i = 0
 
         while i < len(dirlist):
-            array.append(dirlist[i].replace("\\", "").replace(dir, "", 1))
+            array.append(dirlist[i].replace("\\", "").replace(direc, "", 1))
             i += 1
 
     return array
@@ -104,7 +104,7 @@ theme = themeClass(option.THEME)
 # lang
 def updateLang(language):
     if (language != "en"):
-        if (gettext.find("main", localedir="lang", languages=[language]) != None):
+        if (gettext.find("main", localedir="lang", languages=[language]) is not None):
             curLang = gettext.translation("main", localedir="lang", languages=[language])
             curLang.install()
     else:
@@ -594,7 +594,7 @@ class Options(wx.Frame):
             name = settings.get("SETTINGS", "name", fallback=lang)
 
             flag = path+"/flag.png"
-            if (os.path.isfile(flag) == False):
+            if (os.path.isfile(flag) is False):
                 flag = "assets/unknown/flag.png"
             bitmap = wx.Image(flag, type=wx.BITMAP_TYPE_ANY).Scale(20, 15).ConvertToBitmap()
 
@@ -664,7 +664,6 @@ class Options(wx.Frame):
     def updateThemeFunc(self, e):
         option.THEME = THEMES[self.themeBox.GetSelection()]
 
-        global theme
         theme = themeClass(option.THEME)
         saveConfig()
 
