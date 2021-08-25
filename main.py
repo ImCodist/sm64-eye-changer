@@ -10,17 +10,20 @@ from glob import glob
 import wx
 import wx.adv
 
+import gettext
+gettext.install("main")
+
 # --- GLOBAL VARIABLES
 APP_VERSION = "v1.0.1"
 
 # --- OPTIONS
 class optionVars():
     PROJECT_64_DIR = ""
-    LANGUAGE = "English"
+    LANGUAGE = "en"
+    THEME = "Light"
     TEXTUREPATH1 = "SUPER MARIO 64#6B8D43C4#0#2_all"
     TEXTUREPATH2 = "SUPER MARIO 64#9FBECEF9#0#2_all"
     TEXTUREPATH3 = "SUPER MARIO 64#5D6B0678#0#2_all"
-    THEME = "dark"
 
 option = optionVars()
 
@@ -71,18 +74,26 @@ loadConfig()
 # considering not using a stupid module system to make it more accessable to people who dont understand python stuff
 def getModules(dir, ext):
     array = []
-    for file in os.listdir(dir):
-        if file.endswith(ext):
-            if (file == "__init__.py"):
-                continue
-            else:
-                array.append(file.removesuffix(ext))
+    if (ext != "dir"):
+        for file in os.listdir(dir):
+            if file.endswith(ext):
+                if (file == "__init__.py"):
+                    continue
+                else:
+                    array.append(file.removesuffix(ext))
+    else:
+        dirlist = glob(dir+"/*/")
+        i = 0
+
+        while i < len(dirlist):
+            array.append(dirlist[i].replace("\\", "").replace(dir, "", 1))
+            i += 1
 
     return array
 
 THEMES = getModules("themes/", ".theme")
-THEMES.insert(0, "light")
-LANGS = getModules("lang/", ".py")
+THEMES.insert(0, "Light")
+LANGS = getModules("lang", "dir")
 print("loaded " + str(len(THEMES)) + " themes " + str(THEMES))
 print("loaded " + str(len(LANGS)) + " languages " + str(LANGS))
 
@@ -91,8 +102,18 @@ from loadtheme import themeClass
 theme = themeClass(option.THEME)
 
 # lang
-import lang
-lang = lang.eng.LANG()
+def updateLang(language):
+    if (language != "en"):
+        if (gettext.find("main", localedir="lang", languages=[language]) != None):
+            curLang = gettext.translation("main", localedir="lang", languages=[language])
+            curLang.install()
+    else:
+        gettext.install("main")
+
+updateLang(option.LANGUAGE)
+        
+#import lang
+#lang = lang.eng.LANG()
 
 # --- OTHER FUNCTIONS
 def getEyes():
@@ -116,28 +137,28 @@ def DownloadGlide64(self):
     
         open(saveTo, 'wb').write(request.content)
 
-        finished = wx.MessageDialog(self, lang.GLIDE64_FINISHED, lang.GLIDE64_INSTALL, style=wx.OK | wx.ICON_INFORMATION)
+        finished = wx.MessageDialog(self, _("Successfully downloaded & added GLideN64 to Project64.\nPlease change your Graphics Plugin in Project64 to GLideN64, and enable Texture Packs."), _("GLide64 Installation"), style=wx.OK | wx.ICON_INFORMATION)
         finished.ShowModal()
 
     else:
-        error = wx.MessageDialog(self, lang.GLIDE64_DENIED + "\n\n(Could not save to " + saveTo + ")", lang.GLIDE64_INSTALL, style=wx.OK | wx.ICON_ERROR)
+        error = wx.MessageDialog(self, _("Insufficient permissions, could not install GLideN64.\nPlease run the program as administrator and try to install again.\nTo attempt install GLideN64 again, click on the 'Help', then 'Install GLideN64'.") + _("\n\n(Could not save to ") + saveTo + ")", _("GLide64 Installation"), style=wx.OK | wx.ICON_ERROR)
         error.ShowModal()
 
 # run when user first starts the app
 # detection system may need to be changed later
 def FirstTimeSetup(self):
-    firstDialog = wx.MessageDialog(self, lang.FIRST_TIME_WARNING, lang.FIRST_TIME_WELCOME, style=wx.OK | wx.CANCEL | wx.ICON_INFORMATION)
+    firstDialog = wx.MessageDialog(self, _("It seems this is your first time using SM64EC.\nPlease select the folder Project64 is stored in. (This can be changed later in settings)\n\nA dialog will open once you press 'OK'"), _("Welcome!"), style=wx.OK | wx.CANCEL | wx.ICON_INFORMATION)
     result = firstDialog.ShowModal()
 
     if (result == wx.ID_OK):
-        pj64 = wx.DirDialog(self, lang.FIRST_TIME_PJ64DIR, style=wx.DD_DIR_MUST_EXIST | wx.RESIZE_BORDER)
+        pj64 = wx.DirDialog(self, _("Project 64 Directory"), style=wx.DD_DIR_MUST_EXIST | wx.RESIZE_BORDER)
         result = pj64.ShowModal()
 
         if (result == wx.ID_OK):
             option.PROJECT_64_DIR = pj64.GetPath()
             saveConfig()
 
-            downloadGlide64 = wx.MessageDialog(self, lang.FIRST_TIME_GLIDE64, lang.FIRST_TIME_WELCOME, style=wx.YES_NO | wx.ICON_INFORMATION)
+            downloadGlide64 = wx.MessageDialog(self, _("Would you like to install GLideN64?"), _("Welcome!"), style=wx.YES_NO | wx.ICON_INFORMATION)
             result = downloadGlide64.ShowModal()
 
             if (result == wx.ID_YES):
@@ -156,6 +177,8 @@ def FirstTimeSetup(self):
 class MyFrame(wx.Frame):
     def __init__(self, parent, title):
         super(MyFrame, self).__init__(parent, title=title, size=(610,520), style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
+
+        self.Center()
 
         icon = wx.Icon("Assets/icon.ico")
         self.SetIcon(icon)
@@ -179,30 +202,30 @@ class MyFrame(wx.Frame):
 
     def InitMenuBar(self, e):
         menuFile = wx.Menu()
-        menuCreateEye = menuFile.Append(wx.ID_NEW,lang.MENU_NEW, lang.MENU_NEW_TIP)
+        menuCreateEye = menuFile.Append(wx.ID_NEW, _("New"), _("Create a new eye texture."))
         menuFile.AppendSeparator()
-        menuExportEye = menuFile.Append(wx.ID_SAVE,lang.MENU_EXPORT, lang.MENU_EXPORT_TIP)
-        menuImportEye = menuFile.Append(wx.ID_OPEN,lang.MENU_IMPORT, lang.MENU_IMPORT_TIP)
+        menuExportEye = menuFile.Append(wx.ID_SAVE, _("Export..."), _("Export your current textures to a .zip file for sharing."))
+        menuImportEye = menuFile.Append(wx.ID_OPEN, _("Import..."), _("Import a selection of texture files."))
         menuFile.AppendSeparator()
-        menuRefresh = menuFile.Append(wx.ID_REFRESH,lang.MENU_REFRESH, lang.MENU_REFRESH_TIP)
+        menuRefresh = menuFile.Append(wx.ID_REFRESH, _("Refresh List"), _("Refresh your current list of textures."))
         menuFile.AppendSeparator()
-        menuExit = menuFile.Append(wx.ID_EXIT,lang.MENU_EXIT, lang.MENU_EXIT_TIP)
+        menuExit = menuFile.Append(wx.ID_EXIT, _("Exit"), _("Exit the program."))
 
         menuOptions = wx.Menu()
-        self.menuAlwaysTop = menuOptions.AppendCheckItem(wx.ID_TOP,lang.MENU_ALWAYS_ON_TOP, lang.MENU_ALWAYS_ON_TOP_TIP)
+        self.menuAlwaysTop = menuOptions.AppendCheckItem(wx.ID_TOP, _("Always On Top"), _("Toggle the program to show above all windows."))
         menuOptions.AppendSeparator()
-        menuSettings = menuOptions.Append(wx.ID_PREFERENCES,lang.MENU_SETTINGS, lang.MENU_SETTINGS_TIP)
+        menuSettings = menuOptions.Append(wx.ID_PREFERENCES, _("Settings..."), _("Configure the program to your liking."))
 
         menuHelp = wx.Menu()
-        menuWiki = menuHelp.Append(wx.ID_HELP, lang.MENU_WIKI, lang.MENU_WIKI_TIP)
-        menuGlide = menuHelp.Append(wx.ID_FILE, lang.MENU_GLIDE, lang.MENU_GLIDE_TIP)
+        menuWiki = menuHelp.Append(wx.ID_HELP, _("Official Wiki"), _("Open the Official SM64EC Wiki in a new tab."))
+        menuGlide = menuHelp.Append(wx.ID_FILE, _("Install GLideN64"), _("Reinstall / Install the GLideN64 graphics plugin."))
         menuHelp.AppendSeparator()
-        menuAbout = menuHelp.Append(wx.ID_ABOUT, lang.MENU_ABOUT, lang.MENU_ABOUT_TIP)
+        menuAbout = menuHelp.Append(wx.ID_ABOUT, _("About"), _("Information about this program."))
 
         menuBar = wx.MenuBar()
-        menuBar.Append(menuFile,lang.MENU_BAR_FILE)
-        menuBar.Append(menuOptions,lang.MENU_BAR_OPTIONS)
-        menuBar.Append(menuHelp,lang.MENU_BAR_HELP)
+        menuBar.Append(menuFile, _("File"))
+        menuBar.Append(menuOptions, _("Options"))
+        menuBar.Append(menuHelp, _("Help"))
         self.SetMenuBar(menuBar)
 
         menuBar.SetBackgroundColour(theme.BACKGROUND2)
@@ -228,13 +251,13 @@ class MyFrame(wx.Frame):
 
     def OnAbout(self, e):
         aboutInfo = wx.adv.AboutDialogInfo()
-        aboutInfo.SetName(lang.ABOUT_TITLE)
+        aboutInfo.SetName(_("SM64 Eye Changer"))
         aboutInfo.SetVersion(APP_VERSION)
-        aboutInfo.SetDescription(lang.ABOUT_DESC)
+        aboutInfo.SetDescription(_("SM64EC is a tool created for Super Mario 64 machinima.\nThe tool allows for the quick swapping of Mario's eye texture in-game,\ngiving Mario more character and expression."))
         aboutInfo.SetWebSite("https://github.com/ImCodist/sm64-eye-changer")
         aboutInfo.AddDeveloper("@ImCodist / codist")
         aboutInfo.AddArtist("@GlitchyPSIX / GlitchyPSI (Default Eye Textures)")
-        aboutInfo.SetLicence(lang.ABOUT_LICENCE + "\nGNU General Public License v3.0")
+        aboutInfo.SetLicence(_("This project uses the") + "\nGNU General Public License v3.0")
 
         wx.adv.AboutBox(aboutInfo)
 
@@ -297,7 +320,7 @@ class PanelOne(wx.Panel):
 
         self.eyes = getEyes()
 
-        organizer = wx.StaticBox(self, label=lang.EYE_SELECTION, size=(230, 420), pos=(10, 5))
+        organizer = wx.StaticBox(self, label= _("Eye Selection"), size=(230, 420), pos=(10, 5))
         organizer.SetForegroundColour(theme.FOREGROUND)
         organizer.SetBackgroundColour(theme.BACKGROUND2)
 
@@ -308,13 +331,13 @@ class PanelOne(wx.Panel):
 
         createBitmap = wx.Image(theme.I_CREATEEYE, type=wx.BITMAP_TYPE_ANY).Scale(40, 40).ConvertToBitmap()
         self.buttonCreate = wx.BitmapButton(self, bitmap=createBitmap, pos=(25, 365))
-        self.buttonCreate.SetToolTip(lang.TOOLTIP_CREATE)
+        self.buttonCreate.SetToolTip(_("Create a new eye texture."))
         self.buttonCreate.Bind(wx.EVT_BUTTON, self.createNewEye)
         self.buttonCreate.SetBackgroundColour(theme.BUTTON)
 
         deleteBitmap = wx.Image(theme.I_DELETEEYE, type=wx.BITMAP_TYPE_ANY).Scale(40, 40).ConvertToBitmap()
         self.buttonDelete = wx.BitmapButton(self, bitmap=deleteBitmap, pos=(80, 365))
-        self.buttonDelete.SetToolTip(lang.TOOLTIP_DELETE)
+        self.buttonDelete.SetToolTip(_("Delete an existing eye texture."))
         self.buttonDelete.Bind(wx.EVT_BUTTON, self.deleteEye)
         self.buttonDelete.SetBackgroundColour(theme.BUTTON)
         
@@ -323,7 +346,7 @@ class PanelOne(wx.Panel):
         #self.buttonEdit = wx.BitmapButton(self, bitmap=editBitmap, pos=(135, 365), name="Edit")
         #self.buttonEdit.Bind(wx.EVT_BUTTON, self.createNewEye)
 
-        organizer = wx.StaticBox(self, label=lang.EYE_PREVIEW, size=(310, 365), pos=(275, 5))
+        organizer = wx.StaticBox(self, label=_("Eye Preview"), size=(310, 365), pos=(275, 5))
         organizer.SetForegroundColour(theme.FOREGROUND)
         organizer.SetBackgroundColour(theme.BACKGROUND2)
 
@@ -334,12 +357,12 @@ class PanelOne(wx.Panel):
         self.slider = wx.Slider(self, value=1, minValue=1, maxValue=3, pos=(280, 325), size=(300, 40))
         self.slider.Bind(wx.EVT_SLIDER, self.previewFrame)
 
-        self.freezeFrame = wx.CheckBox(self, label=lang.FREEZE_FRAME, pos=(380, 390))
+        self.freezeFrame = wx.CheckBox(self, label=_("Freeze Frame"), pos=(380, 390))
         self.freezeFrame.SetForegroundColour(theme.FOREGROUND)
 
-        applyButton = wx.Button(self, label=lang.APPLY, pos=(485, 385), size=(100,30))
+        applyButton = wx.Button(self, label=_("APPLY"), pos=(485, 385), size=(100,30))
         applyButton.Bind(wx.EVT_BUTTON, self.applyEyes)
-        applyButton.SetToolTip(lang.TOOLTIP_APPLY)
+        applyButton.SetToolTip(_("Apply the currently selected eye texture to the game."))
         applyButton.SetForegroundColour(theme.FOREGROUND)
         applyButton.SetBackgroundColour(theme.BUTTON)
 
@@ -350,7 +373,7 @@ class PanelOne(wx.Panel):
         path = "Eyes/" + self.listBox.GetString(selection) + "/" + str(val) + ".png"
 
         if (os.path.isfile(path) is False):
-            dialog = wx.MessageDialog(self, lang.ERROR_O + "\n" + path, "ERROR CODE 0", style=wx.OK | wx.ICON_ERROR)
+            dialog = wx.MessageDialog(self, _("Could not load from the path:") + "\n" + path, "ERROR CODE 0", style=wx.OK | wx.ICON_ERROR)
             selection = self.listBox.GetSelection()
             shutil.rmtree("Eyes/" + self.listBox.GetString(selection))
 
@@ -385,12 +408,12 @@ class PanelOne(wx.Panel):
         pathTo = option.PROJECT_64_DIR + "/Plugin/hires_texture/" + gameName +"/png_all"
 
         if (os.access(pathTo, os.R_OK) == False):
-            dialog = wx.MessageDialog(self, lang.APPLY_FAILED1  + " '" + pathTo + "' " + lang.APPLY_FAILED2, lang.APPLIED_FAIL, style=wx.OK | wx.ICON_ERROR)
+            dialog = wx.MessageDialog(self, _("Could not save to ")  + " '" + pathTo + "' " + _("\nRun the program as administrator and try again."), _("COULD NOT APPLY"), style=wx.OK | wx.ICON_ERROR)
             dialog.ShowModal()
             return
 
         if (os.path.isdir(option.PROJECT_64_DIR) is False):
-            dialog = wx.MessageDialog(self, lang.ERROR_1, "ERROR CODE 1", style=wx.OK | wx.ICON_ERROR)
+            dialog = wx.MessageDialog(self, _("Please enter a valid Project 64 path."), _("ERROR CODE 1"), style=wx.OK | wx.ICON_ERROR)
             dialog.ShowModal()
             return
 
@@ -399,7 +422,7 @@ class PanelOne(wx.Panel):
 
         # replace eye textures
         if (self.listBox.GetSelection() == wx.NOT_FOUND):
-            dialog = wx.MessageDialog(self, lang.ERROR_2, "ERROR CODE 2", style=wx.OK | wx.ICON_ERROR)
+            dialog = wx.MessageDialog(self, _("Please select a eye texture to apply."), _("ERROR CODE 2"), style=wx.OK | wx.ICON_ERROR)
             dialog.ShowModal()
             return
 
@@ -420,7 +443,7 @@ class PanelOne(wx.Panel):
             shutil.copy(pathFrom + "/" + str(frameToUse) + ".png", pathTo + "/" + eyeFinalNames[i] + ".png")
             i += 1
 
-        dialog = wx.MessageDialog(self, lang.APPLY_SUCCESS1  + " '" + self.listBox.GetString(selection) + "' " + lang.APPLY_SUCCESS2, lang.APPLIED, style=wx.OK | wx.ICON_INFORMATION)
+        dialog = wx.MessageDialog(self, _("Applied the")  + " '" + self.listBox.GetString(selection) + "' " + _("eye texture.\nPlease restart the game or load a savestate."), _("APPLIED"), style=wx.OK | wx.ICON_INFORMATION)
         dialog.ShowModal()
 
     def refreshList(self, e):
@@ -430,23 +453,23 @@ class PanelOne(wx.Panel):
 # --- NEW EYE DIALOG
 class NewEyeDialog(wx.Frame):
     def __init__(self, parent, edit):
-        super(NewEyeDialog, self).__init__(parent, title=lang.CREATE_NEW_EYE, size=(530,340), style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
+        super(NewEyeDialog, self).__init__(parent, title=_("Create New Eye"), size=(530,340), style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
         
         panel = wx.Panel(self, size=(530, 300))
         panel.SetBackgroundColour(theme.BACKGROUND)
 
-        finishButton = wx.Button(panel, label=lang.CREATE_FINISH, pos=(430, 270))
+        finishButton = wx.Button(panel, label=_("Finish"), pos=(430, 270))
         finishButton.Bind(wx.EVT_BUTTON, self.finish)
-        cancelButton = wx.Button(panel, label=lang.CREATE_CANCEL, pos=(345, 270))
+        cancelButton = wx.Button(panel, label=_("Cancel"), pos=(345, 270))
         cancelButton.Bind(wx.EVT_BUTTON, self.cancel)
 
         noEye1Bitmap = wx.Image("Assets/Unknown/1.png", type=wx.BITMAP_TYPE_ANY).Scale(150, 150).ConvertToBitmap()
         noEye2Bitmap = wx.Image("Assets/Unknown/2.png", type=wx.BITMAP_TYPE_ANY).Scale(150, 150).ConvertToBitmap()
         noEye3Bitmap = wx.Image("Assets/Unknown/3.png", type=wx.BITMAP_TYPE_ANY).Scale(150, 150).ConvertToBitmap()
 
-        self.openLabel = wx.StaticText(panel, label=lang.CREATE_OPENED_LABEL, pos=(20,55))
-        self.midLabel = wx.StaticText(panel, label=lang.CREATE_SEMI_LABEL, pos=(180,55))
-        self.closedLabel = wx.StaticText(panel, label=lang.CREATE_CLOSED_LABEL, pos=(340,55))
+        self.openLabel = wx.StaticText(panel, label=_("Opened"), pos=(20,55))
+        self.midLabel = wx.StaticText(panel, label=_("Semi Opened"), pos=(180,55))
+        self.closedLabel = wx.StaticText(panel, label=_("Closed"), pos=(340,55))
 
         self.eyeOpenPreview = wx.StaticBitmap(panel, bitmap=noEye1Bitmap, pos=(20,70))
         self.eyeMidPreview = wx.StaticBitmap(panel, bitmap=noEye2Bitmap, pos=(180,70))
@@ -460,7 +483,7 @@ class NewEyeDialog(wx.Frame):
         self.fileMid.Bind(wx.EVT_FILEPICKER_CHANGED, self.browseEye)
         self.fileClosed.Bind(wx.EVT_FILEPICKER_CHANGED, self.browseEye)
 
-        self.eyeNameLabel = wx.StaticText(panel, label=lang.CREATE_NAME_LABEL, pos=(20,10))
+        self.eyeNameLabel = wx.StaticText(panel, label=_("Name"), pos=(20,10))
         self.eyeName = wx.TextCtrl(panel, pos=(60, 10), size=(100,20))
 
         self.Show()
@@ -482,19 +505,19 @@ class NewEyeDialog(wx.Frame):
 
     def finish(self, e):
         if (self.eyeName.GetValue() == ""):
-            dialog = wx.MessageDialog(self, lang.COULD_NOT_CREATE_1, lang.COULD_NOT_CREATE, style=wx.OK | wx.ICON_ERROR)
+            dialog = wx.MessageDialog(self, _("A name cannot be blank, silly. :P"), _("COULD NOT CREATE"), style=wx.OK | wx.ICON_ERROR)
             dialog.ShowModal()
             return
 
         newpath = "Eyes/" + self.eyeName.GetValue()
 
         if (os.path.exists(newpath)):
-            dialog = wx.MessageDialog(self, lang.COULD_NOT_CREATE_2, lang.COULD_NOT_CREATE, style=wx.OK | wx.ICON_ERROR)
+            dialog = wx.MessageDialog(self, _("An eye texture with this name already exists.\nPlease choose a different name."), _("COULD NOT CREATE"), style=wx.OK | wx.ICON_ERROR)
             dialog.ShowModal()
             return
 
         if (self.fileOpen.GetPath() == "" or self.fileMid.GetPath() == "" or self.fileClosed.GetPath() == ""):
-            dialog = wx.MessageDialog(self, lang.COULD_NOT_CREATE_3, lang.COULD_NOT_CREATE, style=wx.OK | wx.ICON_ERROR)
+            dialog = wx.MessageDialog(self, _("Please select a texture for each type of eye."), _("COULD NOT CREATE"), style=wx.OK | wx.ICON_ERROR)
             dialog.ShowModal()
             return
 
@@ -512,50 +535,75 @@ class NewEyeDialog(wx.Frame):
 # --- OPTIONS DIALOG
 class Options(wx.Frame):
     def __init__(self, parent):
-        super(Options, self).__init__(parent, title=lang.SETTINGS, size=(350,230), style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
+        super(Options, self).__init__(parent, title=_("Settings"), size=(350,230), style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
 
+        self.Centre()
         panel = wx.Panel(self)
 
-        apply = wx.Button(panel, label=lang.SETTINGS_SAVE, pos=(250, 160), name="Save")
+        apply = wx.Button(panel, label=_("Save"), pos=(250, 160), name="Save")
         apply.Bind(wx.EVT_BUTTON, self.updateConfigFunc)
 
         notebook = wx.Notebook(panel)
 
 
         tab1 = wx.Panel(notebook)
-        notebook.AddPage(tab1, lang.SETTINGS_GENERAL)
+        notebook.AddPage(tab1, _("General"))
 
-        project64Label = wx.StaticText(tab1, label=lang.SETTINGS_LABEL_PJ64_PATH, pos=(10,15))
+        project64Label = wx.StaticText(tab1, label=_("Project64 Path"), pos=(10,15))
         self.project64Dir = wx.DirPickerCtrl(tab1, pos=(100, 10), style=wx.DIRP_USE_TEXTCTRL | wx.DIRP_DIR_MUST_EXIST, size=(220,30), path=option.PROJECT_64_DIR)
         self.project64Dir.Bind(wx.EVT_DIRPICKER_CHANGED, self.updateConfigFunc)
-        self.project64Dir.SetToolTip(lang.TOOLTIP_PJ64)
+        self.project64Dir.SetToolTip(_("Set the directory in which Project64 is stored.\nIS REQUIRED."))
 
-        themeLabel = wx.StaticText(tab1, label=lang.SETTINGS_LABEL_THEME_BOX, pos=(10,50))
-        self.themeBox = wx.ComboBox(tab1, pos=(100, 50), choices=THEMES, value=option.THEME)
-        self.themeBox.Bind(wx.EVT_COMBOBOX, self.updateThemeFunc)
+        themeLabel = wx.StaticText(tab1, label=_("Theme"), pos=(10,53))
+        self.themeBox = wx.Choice(tab1, pos=(100, 50), choices=THEMES, size=(100,30))
+        self.themeBox.SetSelection(THEMES.index(option.THEME))
+        self.themeBox.Bind(wx.EVT_CHOICE, self.updateThemeFunc)
 
-        #languages = ["English", "Français"]
-        #self.languageBox = wx.adv.BitmapComboBox(tab1, choices=languages, value=option.LANGUAGE ,pos=(10, 50))
+        langageLabel = wx.StaticText(tab1, label=_("Language"), pos=(10,83))
+        self.languageBox = wx.adv.BitmapComboBox(tab1 ,pos=(100, 80), size=(80,30))
+        self.languageBox.Bind(wx.EVT_COMBOBOX, self.updateLangFunc)
+
+        for lang in LANGS:
+            path = "lang/"+lang
+
+            settings = configparser.ConfigParser()
+            settings.read(path+"/settings.ini")
+
+            name = settings.get("SETTINGS", "name", fallback=lang)
+
+            flag = path+"/flag.png"
+            if (os.path.isfile(flag) == False):
+                flag = "assets/unknown/flag.png"
+            bitmap = wx.Image(flag, type=wx.BITMAP_TYPE_ANY).Scale(20, 15).ConvertToBitmap()
+
+            self.languageBox.Append(name, bitmap)
+            if (option.LANGUAGE == lang):
+                self.languageBox.SetValue(name)
+
+        flagBitmap = self.languageBox.GetItemBitmap(LANGS.index(option.LANGUAGE))
+        self.flagPreview = wx.StaticBitmap(panel, bitmap=flagBitmap, pos=(190,108))
 
 
         tab2 = wx.Panel(notebook)
-        notebook.AddPage(tab2,lang.SETTINGS_ADVANCED)
+        notebook.AddPage(tab2,_("Advanced"))
         
-        organizer = wx.StaticBox(tab2, label=lang.SETTINGS_FINAL_EYE_TEXTURES, pos=(10,5), size=(305, 120))
+        organizer = wx.StaticBox(tab2, label=_("Final Eye Textures"), pos=(10,5), size=(305, 120))
         
-        textureOpenLabel = wx.StaticText(tab2, label=lang.SETTINGS_OPEN_TEXTURE, pos=(20,30))
+        toolTipWarning = _("When applying textures, this will be the final name of the files when copied.\nCan be used to work with ROMs that arent the base game.\nOnly change if you know what you are doing.")
+
+        textureOpenLabel = wx.StaticText(tab2, label=_("Open Texture"), pos=(20,30))
         self.textureOpenPath = wx.TextCtrl(tab2, pos=(125, 27), size=(180,22), value=option.TEXTUREPATH1)
-        self.textureOpenPath.SetToolTip(lang.TOOLTIP_FINAL_EYE)
+        self.textureOpenPath.SetToolTip(toolTipWarning)
 
-        textureMidLabel = wx.StaticText(tab2, label=lang.SETTINGS_MID_TEXTURE, pos=(20,60))
+        textureMidLabel = wx.StaticText(tab2, label=_("Mid Texture"), pos=(20,60))
         self.textureMidPath = wx.TextCtrl(tab2, pos=(125, 57), size=(180,22), value=option.TEXTUREPATH2)
-        self.textureMidPath.SetToolTip(lang.TOOLTIP_FINAL_EYE)
+        self.textureMidPath.SetToolTip(toolTipWarning)
 
-        textureClosedLabel = wx.StaticText(tab2, label=lang.SETTINGS_CLOSED_TEXTURE, pos=(20,90))
+        textureClosedLabel = wx.StaticText(tab2, label=_("Closed Texture"), pos=(20,90))
         self.textureClosedPath = wx.TextCtrl(tab2, pos=(125, 87), size=(180,22), value=option.TEXTUREPATH3)
-        self.textureClosedPath.SetToolTip(lang.TOOLTIP_FINAL_EYE)
+        self.textureClosedPath.SetToolTip(toolTipWarning)
 
-        resetOptions = wx.Button(tab2, pos=(5, 135), label = lang.SETTINGS_RESET_TO_DEFAULT)
+        resetOptions = wx.Button(tab2, pos=(5, 135), label = _("Reset To Default"))
         resetOptions.Bind(wx.EVT_BUTTON, self.resetCustomTexture)
 
 
@@ -576,20 +624,29 @@ class Options(wx.Frame):
         if (self.textureClosedPath.GetValue() != ""): 
             option.TEXTUREPATH3 = self.textureClosedPath.GetValue()
 
-
         saveConfig()
 
         if (e.GetEventObject().GetName() == "Save"):
             self.Close()
 
     def updateThemeFunc(self, e):
-        option.THEME = self.themeBox.GetValue()
+        option.THEME = THEMES[self.themeBox.GetSelection()]
 
         global theme
         theme = themeClass(option.THEME)
         saveConfig()
 
-        self.Close()
+        app.frame.Close()
+
+        app.OnInit()
+        app.frame.OnOptions(e)
+
+    def updateLangFunc(self, e):
+        option.LANGUAGE = LANGS[self.languageBox.GetSelection()]
+
+        updateLang(option.LANGUAGE)
+        saveConfig()
+
         app.frame.Close()
 
         app.OnInit()
@@ -603,9 +660,8 @@ class Options(wx.Frame):
 # --- APP
 class MyApp(wx.App):
     def OnInit(self):
-        self.frame = MyFrame(None, lang.TITLE)
+        self.frame = MyFrame(None, _("SM64 EYE CHANGER"))
         self.frame.Show()
-        self.frame.Center()
 
         #self.Bind(wx.EVT_IDLE, self.onIdle)
 
