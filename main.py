@@ -128,23 +128,23 @@ def getEyes():
     return newlist
 
 def DownloadGlide64(self):
-    saveTo = option.PROJECT_64_DIR + "\\Plugin\\GLideN64.dll"
+    saveTo = option.PROJECT_64_DIR + "\\Plugin"
 
-    if (os.path.isdir(option.PROJECT_64_DIR + "\\Plugin") is False):
-        os.makedirs(option.PROJECT_64_DIR + "\\Plugin")
+    if (os.path.isdir(saveTo) is False):
+        os.makedirs(saveTo)
 
     if (os.access(saveTo, os.R_OK)):
 
         downloadFrom = "https://www.dropbox.com/s/fqqickpexrv676h/GLideN64.dll?dl=1"
         request = requests.get(downloadFrom, allow_redirects=True)
     
-        open(saveTo, 'wb').write(request.content)
+        open(saveTo + "\\GLideN64.dll", 'wb').write(request.content)
 
         finished = wx.MessageDialog(self, _("Successfully downloaded & added GLideN64 to Project64.\nPlease change your Graphics Plugin in Project64 to GLideN64, and enable Texture Packs."), _("GLide64 Installation"), style=wx.OK | wx.ICON_INFORMATION)
         finished.ShowModal()
 
     else:
-        error = wx.MessageDialog(self, _("Insufficient permissions, could not install GLideN64.\nPlease run the program as administrator and try to install again.\nTo attempt to install GLideN64 again, click on the 'Help', then 'Install GLideN64'.") + _("\n\n(Could not save to ") + saveTo + ")", _("GLide64 Installation"), style=wx.OK | wx.ICON_ERROR)
+        error = wx.MessageDialog(self, _("Insufficient permissions, could not install GLideN64.\nPlease run the program as administrator and try to install again.\nTo attempt install GLideN64 again, click on the 'Help', then 'Install GLideN64'.") + _("\n\n(Could not save to ") + saveTo + ")", _("GLide64 Installation"), style=wx.OK | wx.ICON_ERROR)
         error.ShowModal()
 
 # run when user first starts the app
