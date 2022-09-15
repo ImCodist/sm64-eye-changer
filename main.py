@@ -130,6 +130,9 @@ def getEyes():
 def DownloadGlide64(self):
     saveTo = option.PROJECT_64_DIR + "\\Plugin\\GLideN64.dll"
 
+    if (os.path.isdir(option.PROJECT_64_DIR + "\\Plugin") is False):
+        os.makedirs(option.PROJECT_64_DIR + "\\Plugin")
+
     if (os.access(saveTo, os.R_OK)):
 
         downloadFrom = "https://www.dropbox.com/s/fqqickpexrv676h/GLideN64.dll?dl=1"
@@ -141,7 +144,7 @@ def DownloadGlide64(self):
         finished.ShowModal()
 
     else:
-        error = wx.MessageDialog(self, _("Insufficient permissions, could not install GLideN64.\nPlease run the program as administrator and try to install again.\nTo attempt install GLideN64 again, click on the 'Help', then 'Install GLideN64'.") + _("\n\n(Could not save to ") + saveTo + ")", _("GLide64 Installation"), style=wx.OK | wx.ICON_ERROR)
+        error = wx.MessageDialog(self, _("Insufficient permissions, could not install GLideN64.\nPlease run the program as administrator and try to install again.\nTo attempt to install GLideN64 again, click on the 'Help', then 'Install GLideN64'.") + _("\n\n(Could not save to ") + saveTo + ")", _("GLide64 Installation"), style=wx.OK | wx.ICON_ERROR)
         error.ShowModal()
 
 # run when user first starts the app
@@ -409,6 +412,9 @@ class PanelOne(wx.Panel):
         gameName = option.TEXTUREPATH1.split('#')[0]
         print(gameName)
         pathTo = option.PROJECT_64_DIR + "/Plugin/hires_texture/" + gameName +"/png_all"
+        
+        if (os.path.isdir(pathTo) is False):
+            os.makedirs(pathTo)
 
         if (os.access(pathTo, os.R_OK) == False):
             dialog = wx.MessageDialog(self, _("Could not save to ")  + " '" + pathTo + "' " + _("\nRun the program as administrator and try again."), _("COULD NOT APPLY"), style=wx.OK | wx.ICON_ERROR)
@@ -419,9 +425,6 @@ class PanelOne(wx.Panel):
             dialog = wx.MessageDialog(self, _("Please enter a valid Project 64 path."), _("ERROR CODE 1"), style=wx.OK | wx.ICON_ERROR)
             dialog.ShowModal()
             return
-
-        if (os.path.isdir(pathTo) is False):
-            os.makedirs(pathTo)
 
         # replace eye textures
         if (self.listBox.GetSelection() == wx.NOT_FOUND):
