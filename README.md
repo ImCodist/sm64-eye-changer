@@ -1,7 +1,7 @@
 ![Super Mario 64 Eye Changer](https://user-images.githubusercontent.com/50346006/124558284-6de8a580-de08-11eb-927d-64cf02dd3894.png)
 ![Version](https://img.shields.io/github/v/release/ImCodist/sm64-eye-changer?style=flat-square) ![Downloads](https://img.shields.io/github/downloads/ImCodist/sm64-eye-changer/total?style=flat-square) ![License](https://img.shields.io/github/license/ImCodist/sm64-eye-changer?style=flat-square) ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/ImCodist/sm64-eye-changer?style=flat-square)
 
----
+# SM64 Eye Changer
 
 **SM64EC** is a tool created for **Super Mario 64 machinima**. The tool allows for the *quick* swapping of Mario's eye texture in-game, giving Mario more character and expression.\
 The goal is to *eliminate* the constant dragging & dropping of files, or the use of *Quad64* or *ToadsTools64* for eye textures.
